@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Calculator</title>
+</head>
+
+<style>
+    body {
+        /* background-color: red; */
+    }
+
+    .classTable {
+        border: 2px solid grey;
+        table-layout: fixed;
+        width: 250px;
+    }
+
+    .classResult {
+        font-size: 30px;
+        width: 240px;
+        height: 60px;
+        border: 2px solid blue;
+
+        overflow: hidden;
+        white-space: nowrap;
+        /* text-overflow: ellipsis; */
+
+        text-align: right;
+        border-radius: 10px;
+    }
+
+    .classKey {
+        font-size: 30px;
+        width: 60px;
+        height: 60px;
+        border: 2px solid grey;
+        border-radius: 10px;
+    }
+
+    .classKey:hover {
+        color: blue;
+        background-color: red;
+        /* opacity: 0.7; */
+    }
+</style>
+
+<script>
+    var isComplete = 0;
+    var lastNum = null,
+        lastOp = null;
+
+    function calcResult() {
+        var str = document.getElementById("result").innerHTML;
+        var i, j;
+        var num, op;
+        var str2;
+        var result;
+
+        if (str.length == 0) {
+            console.log("err 1++++++");
+            return false;
+        }
+
+        if (str.charAt(0) == '-') {
+            str2 = str.slice(1);
+
+            num = str2.split(/[\+\-\*\/]/);
+            op = str2.match(/[\+\-\*\/]/g);
+        } else {
+            num = str.split(/[\+\-\*\/]/);
+            op = str.match(/[\+\-\*\/]/g);
+        }
+
+        console.log(str);
+        console.log("---");
+        console.log(num);
+        // console.log(num.length);
+        console.log(op);
+        // console.log(op.length);
+        console.log(lastNum);
+        console.log(lastOp);
+        console.log("===");
+
+        if (op == null) {
+            if (lastNum == null && lastOp == null) {
+                console.log("err 2++++++");
+                return false;
+            }
+
+            num.push(lastNum);
+            op = [];
+            op.push(lastOp);
+        } else {
+            for (i = 0; i < num.length; i++) {
+                if (num[i] == "") {
+                    console.log("err 3++++++");
+                    return false;
+                }
+            }
+
+            for (i = 0; i < op.length; i++) {
+                if (op[i] == "") {
+                    console.log("err 4++++++");
+                    return false;
+                }
+            }
+        }
+
+        if (str.charAt(0) == '-') {
+            // result = parseInt(num[0]);
+            result = parseFloat(num[0]);
+            result *= -1;
+        } else {
+            // result = parseInt(num[0]);
+            result = parseFloat(num[0]);
+        }
+
+        for (i = 0; i < op.length; i++) {
+            console.log(`i=${i},num[${i+1}]=${num[i+1]},op[${i}]=${op[i]}`);
+            switch (op[i]) {
+                case '+':
+                    // result += parseInt(num[i + 1]);
+                    result += parseFloat(num[i + 1]);
+                    break;
+
+                case '-':
+                    // result -= parseInt(num[i + 1]);
+                    result -= parseFloat(num[i + 1]);
+                    break;
+
+                case '*':
+                    // result *= parseInt(num[i + 1]);
+                    result *= parseFloat(num[i + 1]);
+                    break;
+
+                case '/':
+                    // result /= parseInt(num[i + 1]);
+                    result /= parseFloat(num[i + 1]);
+                    break;
+            }
+        }
+        // console.log("==========");
+        // console.log(result);
+        document.getElementById("result").innerHTML = result.toString();
+        lastNum = num[num.length - 1];
+        lastOp = op[op.length - 1];
+
+        return true;
+    }
+
+    function show(digit) {
+        //console.log(digit);
+        var str = document.getElementById("result").innerHTML;
+        var lastDigit = str.charAt(str.length - 1);
+
+        // console.log("str =" + str);
+        // console.log("str.length =" + str.length);
+        // console.log("lastDigit =" + lastDigit);
+        // console.log("digit =" + digit);
+        // console.log("===");
+
+        if (digit == '.') {
+            if (isComplete == 1)
+                document.getElementById("result").innerHTML = digit;
+            else
+            if (str.length == 0)
+                document.getElementById("result").innerHTML = digit;
+            else
+                // yctung bug --> not implement '.'
+                if (lastDigit != '.')
+                    document.getElementById("result").innerHTML += digit;
+            // yctung bug --> not implement '.'
+
+            isComplete = 0;
+        } else
+        if (digit >= '0' && digit <= '9') {
+            if (isComplete == 1) {
+                document.getElementById("result").innerHTML = digit;
+                lastNum = null;
+                lastOp = null;
+            } else
+            if (str.length == 0)
+                document.getElementById("result").innerHTML = digit;
+            else
+            if (digit == '0') {
+                if (lastDigit == '0') {
+                    if (str.length == 1) {
+                        // nop
+                    } else {
+                        document.getElementById("result").innerHTML += digit;
+                    }
+                } else {
+                    document.getElementById("result").innerHTML += digit;
+                }
+            } else {
+                if (lastDigit == '0') {
+                    if (str.length == 1) {
+                        // str = str.slice(0, str.length - 1) + digit;
+                        str = digit;
+                        document.getElementById("result").innerHTML = str;
+                    } else {
+                        if (str.charAt(str.length - 2) == '+' ||
+                            str.charAt(str.length - 2) == '-' ||
+                            str.charAt(str.length - 2) == '*' ||
+                            str.charAt(str.length - 2) == '/') {
+                            str = str.slice(0, str.length - 1) + digit;
+                            document.getElementById("result").innerHTML = str;
+                        } else {
+                            document.getElementById("result").innerHTML += digit;
+                        }
+
+                        // if (str.length == 1) {
+                        //     if (str.charAt(str.length - 1) == '0') {
+                        //         str = str.slice(0, str.length - 1) + digit;
+                        //         document.getElementById("result").innerHTML = str;
+                        //     } else {
+                        //         document.getElementById("result").innerHTML += digit;
+                        //     }
+                        // } else {
+                        //     if ((str.charAt(str.length - 2) == '+' ||
+                        //             str.charAt(str.length - 2) == '-' ||
+                        //             str.charAt(str.length - 2) == '*' ||
+                        //             str.charAt(str.length - 2) == '/') &&
+                        //         (str.charAt(str.length - 1) == '0')) {
+                        //         str = str.slice(0, str.length - 1) + digit;
+                        //         document.getElementById("result").innerHTML = str;
+                        //     } else {
+                        //         document.getElementById("result").innerHTML += digit;
+                        //     }
+                        // }
+                    }
+                } else {
+                    document.getElementById("result").innerHTML += digit;
+                }
+
+                isComplete = 0;
+            }
+        } else
+        if (digit == '+' || digit == '-' || digit == '*' || digit == '/') {
+            console.log("digit=+-*/");
+            if (str.length != 0) {
+                if (lastDigit == '+' || lastDigit == '-' || lastDigit == '*' || lastDigit == '/') {
+                    console.log("last=+-*/");
+                    console.log(str);
+                    console.log(digit);
+
+                    str = str.slice(0, str.length - 1) + digit;
+                    console.log(str);
+                    document.getElementById("result").innerHTML = str;
+                } else
+                    document.getElementById("result").innerHTML += digit;
+            }
+
+            isComplete = 0;
+        } else
+        if (digit == '=') {
+            isComplete = calcResult();
+        } else
+        if (digit == 'C') {
+            document.getElementById("result").innerHTML = "";
+            lastNum = null;
+            lastOp = null;
+
+            isComplete = 0;
+        }
+
+        // console.log(document.getElementById("result").innerHTML);
+        // console.log("=========");
+    }
+</script>
+
+<body>
+
+    <p><a href="https://www.desmos.com/scientific" target="_blank">參考網路上面的計算機</a></p>
+
+    <table class="classTable">
+        <tr>
+            <td class="classResult" id="result" colspan="4"></td>
+        </tr>
+        <tr>
+            <td><button class="classKey" onclick="show('7')">7</button></td>
+            <td><button class="classKey" onclick="show('8')">8</button></td>
+            <td><button class="classKey" onclick="show('9')">9</button></td>
+            <td><button class="classKey" onclick="show('/')">/</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="classKey" onclick="show('4')">4</button></td>
+            <td><button class="classKey" onclick="show('5')">5</button></td>
+            <td><button class="classKey" onclick="show('6')">6</button></td>
+            <td><button class="classKey" onclick="show('*')">*</button></td>
+        </tr>
+        <tr>
+            <td><button class="classKey" onclick="show('1')">1</button></td>
+            <td><button class="classKey" onclick="show('2')">2</button></td>
+            <td><button class="classKey" onclick="show('3')">3</button></td>
+            <td><button class="classKey" onclick="show('-')">-</button></td>
+        </tr>
+        <tr>
+            <!-- <td><button class="classKey" onclick="show('.')">.</button></td> -->
+            <td><button class="classKey" onclick="show('C')">C</button></td>
+            <td><button class="classKey" onclick="show('0')">0</button></td>
+            <td><button class="classKey" onclick="show('=')">=</button></td>
+            <td><button class="classKey" onclick="show('+')">+</button></td>
+        </tr>
+    </table>
+</body>
+
+</html>
