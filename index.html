@@ -108,6 +108,36 @@
             }
         }
 
+        // * and /
+        i = 0;
+        while (i < op.length) {
+            console.log(`i=${i},num[${i+1}]=${num[i+1]},op[${i}]=${op[i]}`);
+            if (op[i] != '*' && op[i] != '/') {
+                i++;
+                continue;
+            }
+            if (i == 0 && str.charAt(0) == '-') {
+                // result = parseInt(num[0]);
+                result = parseFloat(num[i]);
+                result *= -1;
+            } else {
+                // result = parseInt(num[0]);
+                result = parseFloat(num[i]);
+            }
+
+            if (op[i] == '*') {
+                // result *= parseInt(num[i + 1]);
+                result *= parseFloat(num[i + 1]);
+            } else {
+                // result /= parseInt(num[i + 1]);
+                result /= parseFloat(num[i + 1]);
+            }
+            num[i] = result;
+            num.splice(i + 1, 1);
+            op.splice(i, 1);
+        }
+
+        // + and /
         if (str.charAt(0) == '-') {
             // result = parseInt(num[0]);
             result = parseFloat(num[0]);
@@ -119,26 +149,12 @@
 
         for (i = 0; i < op.length; i++) {
             console.log(`i=${i},num[${i+1}]=${num[i+1]},op[${i}]=${op[i]}`);
-            switch (op[i]) {
-                case '+':
-                    // result += parseInt(num[i + 1]);
-                    result += parseFloat(num[i + 1]);
-                    break;
-
-                case '-':
-                    // result -= parseInt(num[i + 1]);
-                    result -= parseFloat(num[i + 1]);
-                    break;
-
-                case '*':
-                    // result *= parseInt(num[i + 1]);
-                    result *= parseFloat(num[i + 1]);
-                    break;
-
-                case '/':
-                    // result /= parseInt(num[i + 1]);
-                    result /= parseFloat(num[i + 1]);
-                    break;
+            if (op[i] == '+') {
+                // result += parseInt(num[i + 1]);
+                result += parseFloat(num[i + 1]);
+            } else {
+                // result -= parseInt(num[i + 1]);
+                result -= parseFloat(num[i + 1]);
             }
         }
         // console.log("==========");
@@ -210,26 +226,6 @@
                         } else {
                             document.getElementById("result").innerHTML += digit;
                         }
-
-                        // if (str.length == 1) {
-                        //     if (str.charAt(str.length - 1) == '0') {
-                        //         str = str.slice(0, str.length - 1) + digit;
-                        //         document.getElementById("result").innerHTML = str;
-                        //     } else {
-                        //         document.getElementById("result").innerHTML += digit;
-                        //     }
-                        // } else {
-                        //     if ((str.charAt(str.length - 2) == '+' ||
-                        //             str.charAt(str.length - 2) == '-' ||
-                        //             str.charAt(str.length - 2) == '*' ||
-                        //             str.charAt(str.length - 2) == '/') &&
-                        //         (str.charAt(str.length - 1) == '0')) {
-                        //         str = str.slice(0, str.length - 1) + digit;
-                        //         document.getElementById("result").innerHTML = str;
-                        //     } else {
-                        //         document.getElementById("result").innerHTML += digit;
-                        //     }
-                        // }
                     }
                 } else {
                     document.getElementById("result").innerHTML += digit;
